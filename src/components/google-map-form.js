@@ -14,7 +14,6 @@ const GoogleMapHoC = withScriptjs(
     if (!currentLocation) {
       return null;
     }
-    console.log('currentLocation', currentLocation);
     const { coords } = currentLocation;
     const { location } = searchLocation || {};
     return (

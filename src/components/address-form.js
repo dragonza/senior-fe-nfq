@@ -9,15 +9,29 @@ import {
   Panel
 } from 'react-bootstrap';
 
+const errorsText = {
+  streetRequired: 'Street is required',
+  districtAndWardRequired: 'Both Ward and District are required',
+  cityRequired: 'City is required'
+};
+
 export default class AddressForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      street: '',
-      ward: '',
-      district: '',
-      city: '',
-      country: ''
+      address: {
+        street: '',
+        ward: '',
+        district: '',
+        city: '',
+        country: ''
+      },
+      errors: {
+        street: '',
+        city: '',
+        district: ''
+      },
+      isFormValid: false
     };
   }
 
@@ -26,44 +40,94 @@ export default class AddressForm extends Component {
     if (updatedAddress && updatedAddress.selectedAddress) {
       const { address } = updatedAddress;
       Object.entries(address).forEach(item => {
-        this.setState({ [item[0]]: item[1] });
+        this.setState({ address: { [item[0]]: item[1] } });
       });
     }
   }
+  getValidationState = () => {
+    const { street, ward, district, city } = this.state.address;
+    const errors = {};
+    let isFormValid = true;
 
-  submitHandler = e => {
-    e.preventDefault();
-    const { updatedAddress } = this.props;
-    this.props.submitHandler(
-      this.state,
-      updatedAddress ? updatedAddress.selectedAddress : null
-    );
-    this.resetState();
-  };
+    if (!street.length) {
+      isFormValid = false;
+      errors.street = errorsText.streetRequired;
+    } else {
+      errors.street = '';
+    }
 
-  handleInputChange = e => {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
+    if (city.length) {
+      errors.city = '';
+      errors.district = '';
+    } else if (district.length && ward.length) {
+      errors.district = '';
+      errors.city = '';
+    } else if (!city.length && (district.length || ward.length)) {
+      isFormValid = false;
+      errors.district = errorsText.districtAndWardRequired;
+      errors.city = '';
+    } else {
+      isFormValid = false;
+      errors.district = '';
+      errors.city = errorsText.cityRequired;
+    }
+
+    this.setState({ errors });
+
+    return isFormValid;
   };
 
   resetState = () => {
     this.setState({
-      street: '',
-      ward: '',
-      district: '',
-      city: '',
-      country: ''
+      address: {
+        street: '',
+        ward: '',
+        district: '',
+        city: '',
+        country: ''
+      },
+      errors: {
+        street: '',
+        city: '',
+        district: ''
+      },
+      isFormValid: false
     });
   };
 
+  handleInputChange = e => {
+    const { name, value } = e.target;
+    this.setState(({ address }) => ({
+      address: { ...address, [name]: value }
+    }));
+  };
+
+  submitHandler = e => {
+    e.preventDefault();
+    const { updatedAddress } = this.props;
+    const isFormValid = this.getValidationState();
+    if (!isFormValid) return;
+    this.props.submitHandler(
+      this.state.address,
+      updatedAddress ? updatedAddress.selectedAddress : null
+    );
+    this.setState({
+      isFormValid: true
+    });
+    this.resetState();
+  };
+
   buildComponent = (props, state) => {
-    const { street, ward, district, city, country } = state;
+    const { street, ward, district, city, country } = state.address;
+    const { errors } = state;
     return (
       <Panel>
         <Panel.Body>
           <form onSubmit={this.submitHandler}>
             <FormGroup>
-              <ControlLabel>Street</ControlLabel>
+              <ControlLabel>
+                <span className="required">Street</span>
+              </ControlLabel>
               <FormControl
                 name="street"
                 type="text"
@@ -71,6 +135,9 @@ export default class AddressForm extends Component {
                 onChange={this.handleInputChange}
               />
               <FormControl.Feedback />
+              {errors.street ? (
+                <div className="text-danger">{errors.street}</div>
+              ) : null}
             </FormGroup>
             <FormGroup>
               <ControlLabel>Ward</ControlLabel>
@@ -91,6 +158,9 @@ export default class AddressForm extends Component {
                 onChange={this.handleInputChange}
               />
               <FormControl.Feedback />
+              {errors.district ? (
+                <div className="text-danger">{errors.district}</div>
+              ) : null}
             </FormGroup>
             <FormGroup>
               <ControlLabel>City/Provice</ControlLabel>
@@ -101,6 +171,9 @@ export default class AddressForm extends Component {
                 onChange={this.handleInputChange}
               />
               <FormControl.Feedback />
+              {errors.city ? (
+                <div className="text-danger">{errors.city}</div>
+              ) : null}
             </FormGroup>
             <FormGroup>
               <ControlLabel>Country</ControlLabel>

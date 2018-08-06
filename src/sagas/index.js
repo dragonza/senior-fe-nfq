@@ -47,7 +47,7 @@ function* getUserLocation() {
   const { getLocation } = yield call(userPositionPromised);
   const { error, location } = yield call(getLocation);
   if (error) {
-    console.log('Failed to get user position!', error);
+    console.error('Failed to get user position!', error);
   } else {
     yield put(actions.updateCurrentLocation(location));
   }
@@ -58,7 +58,7 @@ function* exportToCSV({ data }) {
   if (data) {
     yield call(exportCSVFileSaga, data);
   } else {
-    console.log('data not found');
+    console.error('data not found');
   }
 }
 

@@ -1,15 +1,16 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Table, Panel, Button, ButtonToolbar } from "react-bootstrap";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Table, Panel, Button } from 'react-bootstrap';
+import AddressItem from './address-item';
 
 export default class AddressList extends Component {
   deleteHandler = e => {
     this.props.deleteHandler(e.target.value);
   };
 
-  updateHandler = e => {
+  updateHandler = (e, address) => {
     e.preventDefault();
-    console.log("e", e.target);
+    console.log('address', address);
     this.props.updateHandler(e.target.value);
   };
 
@@ -19,12 +20,7 @@ export default class AddressList extends Component {
 
   buildComponent = props => {
     const { addresses } = props;
-    console.log('addresses', addresses);
     const allAddress = Object.entries(addresses);
-    console.log('allAddress', allAddress)
-    if (!allAddress.length) {
-      return <div>Loading</div>
-    }
     return (
       <Panel>
         <Panel.Heading>
@@ -36,34 +32,15 @@ export default class AddressList extends Component {
             <tbody>
               {allAddress.map(item => {
                 const { address } = item[1];
+                console.log('address', address);
                 return (
-                  <tr key={item[0]}>
-                    <td>{address.street}</td>
-                    <td>{address.ward}</td>
-                    <td>{address.district}</td>
-                    <td>{address.city}</td>
-                    <td>{address.country}</td>
-                    <td>
-                      <ButtonToolbar>
-                        <Button
-                          value={item[0]}
-                          bsSize="xsmall"
-                          bsStyle="primary"
-                          onClick={this.updateHandler}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          value={item[0]}
-                          bsSize="xsmall"
-                          bsStyle="danger"
-                          onClick={this.deleteHandler}
-                        >
-                          Delete
-                        </Button>
-                      </ButtonToolbar>
-                    </td>
-                  </tr>
+                  <AddressItem
+                    key={item[0]}
+                    updateHandler={e => this.updateHandler(e, address)}
+                    deleteHandler={this.deleteHandler}
+                    address={address}
+                    id={item[0]}
+                  />
                 );
               })}
             </tbody>

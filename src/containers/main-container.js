@@ -61,6 +61,7 @@ class MainContainer extends Component {
 
   buildComponent = (props, state) => {
     const { addresses, location, searchLocation } = props;
+    console.log('addresses', addresses);
     const { selectedAddress } = state;
     const gmapURL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAP_API}&v=3.exp&libraries=geometry,drawing,places`; // eslint-disable-line
     if (addresses) {
