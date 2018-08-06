@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Table, Panel, Button, ButtonToolbar } from 'react-bootstrap';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Table, Panel, Button, ButtonToolbar } from "react-bootstrap";
 
 export default class AddressList extends Component {
   deleteHandler = e => {
@@ -8,6 +8,8 @@ export default class AddressList extends Component {
   };
 
   updateHandler = e => {
+    e.preventDefault();
+    console.log("e", e.target);
     this.props.updateHandler(e.target.value);
   };
 
@@ -17,24 +19,20 @@ export default class AddressList extends Component {
 
   buildComponent = props => {
     const { addresses } = props;
+    console.log('addresses', addresses);
     const allAddress = Object.entries(addresses);
+    console.log('allAddress', allAddress)
+    if (!allAddress.length) {
+      return <div>Loading</div>
+    }
     return (
       <Panel>
         <Panel.Heading>
-          <Panel.Title componentClass="h1">Address</Panel.Title>
+          <Panel.Title componentClass="h1">Addresses</Panel.Title>
         </Panel.Heading>
         <Panel.Body>
           <Table striped bordered condensed hover>
-            <thead>
-              <tr>
-                <th>Street</th>
-                <th>Ward</th>
-                <th>District</th>
-                <th>City/Province</th>
-                <th>Country</th>
-                <th>Action</th>
-              </tr>
-            </thead>
+            {this.renderTableHeader()}
             <tbody>
               {allAddress.map(item => {
                 const { address } = item[1];
@@ -81,6 +79,21 @@ export default class AddressList extends Component {
           </Button>
         </Panel.Footer>
       </Panel>
+    );
+  };
+
+  renderTableHeader = () => {
+    return (
+      <thead>
+        <tr>
+          <th>Street</th>
+          <th>Ward</th>
+          <th>District</th>
+          <th>City/Province</th>
+          <th>Country</th>
+          <th>Action</th>
+        </tr>
+      </thead>
     );
   };
 

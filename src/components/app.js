@@ -4,7 +4,7 @@ import MainContainer from '../containers/main-container';
 const App = () => {
   return (
     <div className="container">
-      <h1>Just a test, as I hate</h1>
+      <h1>Welcome to address management</h1>
       <MainContainer />
     </div>
   );

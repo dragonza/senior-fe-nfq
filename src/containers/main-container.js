@@ -32,7 +32,6 @@ class MainContainer extends Component {
   }
 
   componentDidMount() {
-    console.log('didmount');
     this.props.dispatch(actions.syncAddressSaga());
     this.props.dispatch(actions.getCurrentLocationSaga());
   }
@@ -63,11 +62,9 @@ class MainContainer extends Component {
   buildComponent = (props, state) => {
     const { addresses, location, searchLocation } = props;
     const { selectedAddress } = state;
-    const gmapURL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAP_API}&v=3.exp&libraries=geometry,drawing,places`;
-    console.log('locatin', location);
+    const gmapURL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAP_API}&v=3.exp&libraries=geometry,drawing,places`; // eslint-disable-line
     if (addresses) {
       const updatedAddress = { selectedAddress, ...addresses[selectedAddress] };
-      console.log('test');
       return (
         <Grid>
           <Row className="show-grid">
@@ -79,7 +76,7 @@ class MainContainer extends Component {
             </Col>
             <Col xs={6} md={4}>
               {!location.coords ? (
-                <div>No location</div>
+                <div>Loanding map</div>
               ) : (
                 <GoogleMapForm
                   searchLocation={searchLocation}
