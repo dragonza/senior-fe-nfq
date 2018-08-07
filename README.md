@@ -1,7 +1,7 @@
 # Introduction
 This project is an assignment for senior frontend at NQF. The requirement could be found [here](https://gist.github.com/hoanglamhuynh/49d1c68442442273ab94b0b6073002ed).
 
-**Demo**: https://dragonza.github.io/senior-fe-nqf/
+**Demo**: https://dragonza.github.io/senior-fe-nfq/
 
 # Getting Started
 * `npm i` - Install dependencies. This might take a while.

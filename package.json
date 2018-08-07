@@ -71,7 +71,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "https://dragonza.github.io/senior-fe-nqf",
+  "homepage": "https://dragonza.github.io/senior-fe-nfq",
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,mjs}"
