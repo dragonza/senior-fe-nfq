@@ -37,11 +37,11 @@ export default class AddressForm extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { updatedAddress } = nextProps;
-    if (updatedAddress && updatedAddress.selectedAddress) {
-      const { address } = updatedAddress;
-      Object.entries(address).forEach(item => {
-        this.setState({ address: { [item[0]]: item[1] } });
-      });
+    if (Object.keys(updatedAddress).length) {
+      // const { address } = updatedAddress;
+      this.setState({
+        address: {...updatedAddress}
+      })
     }
   }
   getValidationState = () => {
@@ -104,12 +104,11 @@ export default class AddressForm extends Component {
 
   submitHandler = e => {
     e.preventDefault();
-    const { updatedAddress } = this.props;
+    // const { updatedAddress } = this.props;
     const isFormValid = this.getValidationState();
     if (!isFormValid) return;
     this.props.submitHandler(
-      this.state.address,
-      updatedAddress ? updatedAddress.selectedAddress : null
+      this.state.address
     );
     this.setState({
       isFormValid: true

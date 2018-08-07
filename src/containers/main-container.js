@@ -20,14 +20,14 @@ class MainContainer extends Component {
   static propTypes = {
     location: PropTypes.object,
     searchLocation: PropTypes.object,
-    addresses: PropTypes.object,
+    addresses: PropTypes.array,
     dispatch: PropTypes.func.isRequired
   };
 
   constructor() {
     super();
     this.state = {
-      selectedAddress: null
+      selectedAddress: {}
     };
   }
 
@@ -36,22 +36,21 @@ class MainContainer extends Component {
     this.props.dispatch(actions.getCurrentLocationSaga());
   }
 
-  submitHandler = (state, selectedAddress) => {
-    this.props.dispatch(actions.addAddressSaga(state, selectedAddress));
-    this.setState({ selectedAddress: null });
+  submitHandler = (address) => {
+    this.props.dispatch(actions.addAddressSaga(address, address.id));
+    this.setState({ selectedAddress: {} });
   };
 
   deleteHandler = addressId => {
     this.props.dispatch(actions.deleteAddressSaga(addressId));
   };
 
-  updateHandler = addressId => {
+  updateHandler = address => {
     this.setState({
-      selectedAddress: addressId
+      selectedAddress: address
     });
 
-    const { addresses } = this.props;
-    const query = Object.values(addresses[addressId].address).join(' ');
+    const query = Object.values(address).join(' ');
     this.props.dispatch(actions.searchLocationSaga(query));
   };
 
@@ -61,46 +60,50 @@ class MainContainer extends Component {
 
   buildComponent = (props, state) => {
     const { addresses, location, searchLocation } = props;
-    console.log('addresses', addresses);
     const { selectedAddress } = state;
     const gmapURL = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAP_API}&v=3.exp&libraries=geometry,drawing,places`; // eslint-disable-line
-    if (addresses) {
-      const updatedAddress = { selectedAddress, ...addresses[selectedAddress] };
-      return (
-        <Grid>
-          <Row className="show-grid">
-            <Col xs={12} md={8}>
-              <AddressForm
-                submitHandler={this.submitHandler}
-                updatedAddress={updatedAddress}
-              />
-            </Col>
-            <Col xs={6} md={4}>
-              {!location.coords ? (
-                <div>Loanding map</div>
-              ) : (
-                <GoogleMapForm
-                  searchLocation={searchLocation}
-                  currentLocation={location}
-                  googleMapURL={gmapURL}
-                  loadingElement={<div style={{ height: `100%` }} />}
-                  containerElement={<div style={{ height: `400px` }} />}
-                  mapElement={<div style={{ height: `100%` }} />}
-                />
-              )}
-            </Col>
-          </Row>
-          <AddressList
-            addresses={addresses}
-            deleteHandler={this.deleteHandler}
-            updateHandler={this.updateHandler}
-            exportCSVHandler={this.exportCSVHandler}
-          />
-        </Grid>
-      );
-    }
+    // if (addresses) {
+    //   // const updatedAddress = { ...selectedAddress };
+    //   return (
+    //     <Grid>
+    //
+    //
+    //     </Grid>
+    //   );
+    // }
 
-    return <div>...loading</div>;
+    return (
+      <Grid>
+        <Row className="show-grid">
+          <Col xs={12} md={8}>
+            <AddressForm
+              submitHandler={this.submitHandler}
+              updatedAddress={selectedAddress}
+            />
+          </Col>
+          <Col xs={6} md={4}>
+            {!location.coords ? (
+              <div>Loanding map</div>
+            ) : (
+              <GoogleMapForm
+                searchLocation={searchLocation}
+                currentLocation={location}
+                googleMapURL={gmapURL}
+                loadingElement={<div style={{ height: `100%` }} />}
+                containerElement={<div style={{ height: `400px` }} />}
+                mapElement={<div style={{ height: `100%` }} />}
+              />
+            )}
+          </Col>
+        </Row>
+        {addresses ? <AddressList
+          addresses={addresses}
+          deleteHandler={this.deleteHandler}
+          updateHandler={this.updateHandler}
+          exportCSVHandler={this.exportCSVHandler}
+        /> : null }
+      </Grid>
+    )
   };
 
   render() {
@@ -119,6 +122,6 @@ function mapStateToProps(state) {
 MainContainer.defaultProps = {
   location: {},
   searchLocation: {},
-  addresses: {}
+  addresses: []
 };
 export default connect(mapStateToProps)(MainContainer);

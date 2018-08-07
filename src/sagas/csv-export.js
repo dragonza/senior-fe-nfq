@@ -32,19 +32,19 @@ function convertArrayOfObjectsToCSV(data) {
   return Promise.resolve(result);
 }
 
-function transform(data) {
-  const result = [];
-  Object.entries(data).forEach(item => {
-    result.push(item[1].address);
-  });
-  return Promise.resolve(result);
-}
+// function transform(data) {
+//   const result = [];
+//   Object.entries(data).forEach(item => {
+//     result.push(item[1].address);
+//   });
+//   return Promise.resolve(result);
+// }
 
 export function* exportCSVFileSaga(data) {
-  const transforming = yield call(transform, data);
-  const csv = yield call(convertArrayOfObjectsToCSV, transforming);
+  // const transforming = yield call(transform, data);
+  const csv = yield call(convertArrayOfObjectsToCSV, data);
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const fileName = `address-${new Date().getTime()}.csv`;
+  const fileName = `addresses-${new Date().getTime()}.csv`;
   if (navigator.msSaveBlob) {
     // IE 10+
     navigator.msSaveBlob(blob, fileName);

@@ -4,7 +4,7 @@ import {
   UPDATE_SEARCH_LOCATION
 } from '../actions';
 
-const appReducer = (state = {}, action) => {
+const appReducer = (state = { addresses: {} }, action) => {
   switch (action.type) {
     case UPDATE_SEARCH_LOCATION:
     case UPDATE_LOCATION:

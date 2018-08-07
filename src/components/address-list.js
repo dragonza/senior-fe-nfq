@@ -10,8 +10,8 @@ export default class AddressList extends Component {
 
   updateHandler = (e, address) => {
     e.preventDefault();
-    console.log('address', address);
-    this.props.updateHandler(e.target.value);
+    const { street, city, ward, district, country, id } = address;
+    this.props.updateHandler({ street, city, ward, district, country, id });
   };
 
   downloadCSVHandler = () => {
@@ -20,7 +20,7 @@ export default class AddressList extends Component {
 
   buildComponent = props => {
     const { addresses } = props;
-    const allAddress = Object.entries(addresses);
+    // const allAddress = Object.entries(addresses);
     return (
       <Panel>
         <Panel.Heading>
@@ -30,16 +30,14 @@ export default class AddressList extends Component {
           <Table striped bordered condensed hover>
             {this.renderTableHeader()}
             <tbody>
-              {allAddress.map(item => {
-                const { address } = item[1];
-                console.log('address', address);
+              {addresses.map(address => {
                 return (
                   <AddressItem
-                    key={item[0]}
+                    key={address.id}
                     updateHandler={e => this.updateHandler(e, address)}
                     deleteHandler={this.deleteHandler}
                     address={address}
-                    id={item[0]}
+                    id={address.id}
                   />
                 );
               })}
@@ -52,7 +50,7 @@ export default class AddressList extends Component {
             bsStyle="primary"
             onClick={this.downloadCSVHandler}
           >
-            Total: {allAddress.length} - Download CSV
+            Total: {addresses.length} - Download CSV
           </Button>
         </Panel.Footer>
       </Panel>
@@ -80,12 +78,12 @@ export default class AddressList extends Component {
 }
 
 AddressList.propTypes = {
-  addresses: PropTypes.object,
+  addresses: PropTypes.array,
   deleteHandler: PropTypes.func.isRequired,
   updateHandler: PropTypes.func.isRequired,
   exportCSVHandler: PropTypes.func // eslint-disable-line
 };
 
 AddressList.defaultProps = {
-  addresses: {}
+  addresses: []
 };

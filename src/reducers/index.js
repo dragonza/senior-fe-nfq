@@ -8,7 +8,13 @@ const reduxApp = combineReducers({
 });
 
 // selections
-export const getAddresses = state => state.appReducer.addresses;
+export const getAddresses = state => {
+  const { addresses } = state.appReducer;
+  return Object.keys(addresses).map(addressId => ({
+    ...addresses[addressId].address,
+    id: addressId
+  }));
+};
 export const getCurrentLocation = state => state.appReducer.location;
 export const getSearchLocation = state => state.appReducer.searchLocation;
 

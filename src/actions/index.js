@@ -53,7 +53,6 @@ export const deleteAddressSaga = addressId => {
 };
 
 export const getCurrentLocationSaga = () => {
-  console.log('test');
   return {
     type: CURRENT_LOCATION_SAGA
   };
